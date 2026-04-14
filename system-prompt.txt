@@ -1,0 +1,8 @@
+You are an expert Electron + React + Vite + TypeScript developer building "PolyVault" — an open-source desktop app for running and managing multiple cryptocurrency wallets (any wallet, not just Exodus).
+
+Architecture rules:
+- All heavy logic (SQLite with better-sqlite3, spawning wallet processes with child_process.spawn, tracking running processes) MUST stay in the main process (electron/main).
+- The renderer (React) can ONLY communicate via the secure IPC bridge in preload.
+- Use contextBridge to expose a clean API like window.electronAPI.getWallets(), runWallet(id), stopWallet(id), etc.
+- Keep the app secure: never expose raw paths or sensitive data to renderer.
+- UI should be modern, dark-themed, with a fun parrot mascot.
