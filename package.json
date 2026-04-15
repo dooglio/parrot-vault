@@ -11,7 +11,7 @@
     "build": "tsc && vite build && tsc -p tsconfig.electron.json",
     "build:electron": "tsc -p tsconfig.electron.json",
     "preview": "vite preview",
-    "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:dev": "concurrently \"vite --port 5173 --strictPort\" \"wait-on http://localhost:5173 && VITE_DEV_SERVER_URL=http://localhost:5173 electron .\"",
     "electron:build": "npm run build && electron-builder --mac",
     "electron:pack": "npm run build && electron-builder --dir",
     "lint": "eslint . --max-warnings 0",
@@ -22,6 +22,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.3",
     "better-sqlite3": "^11.9.1",
+    "electron-squirrel-startup": "^1.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.1.1"
