@@ -31,17 +31,13 @@ export function useProcessEvents(): void {
       }
     )
 
-    const unsubStdout = window.electronAPI.onProcessStdout(
-      (id: number, output: string) => {
-        dispatch(processStdout({ id, output }))
-      }
-    )
+    const unsubStdout = window.electronAPI.onProcessStdout((id: number, output: string) => {
+      dispatch(processStdout({ id, output }))
+    })
 
-    const unsubStderr = window.electronAPI.onProcessStderr(
-      (id: number, output: string) => {
-        dispatch(processStderr({ id, output }))
-      }
-    )
+    const unsubStderr = window.electronAPI.onProcessStderr((id: number, output: string) => {
+      dispatch(processStderr({ id, output }))
+    })
 
     return () => {
       unsubStart()

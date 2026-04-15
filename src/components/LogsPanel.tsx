@@ -15,7 +15,7 @@ export default function LogsPanel() {
 
   // If no active tab is set, pick the first one
   const currentTabId =
-    activeTabId !== null && entries[activeTabId] ? activeTabId : tabIds[0] ?? null
+    activeTabId !== null && entries[activeTabId] ? activeTabId : (tabIds[0] ?? null)
 
   const currentEntry = currentTabId !== null ? entries[currentTabId] : null
 
@@ -74,9 +74,7 @@ export default function LogsPanel() {
               tabIndex={0}
               onKeyDown={(e) => e.key === 'Enter' && dispatch(setActiveLogTab(id))}
             >
-              <span className="logs-tab-status">
-                {isRunning ? '●' : hasError ? '⚠' : '■'}
-              </span>
+              <span className="logs-tab-status">{isRunning ? '●' : hasError ? '⚠' : '■'}</span>
               <span className="logs-tab-name">
                 {getWalletName(id)}
                 {entry.status === 'stopped' && ' (finished)'}
@@ -124,19 +122,14 @@ export default function LogsPanel() {
       <div className="logs-output">
         {currentEntry.logs.length === 0 ? (
           <div className="logs-empty">
-            {currentEntry.status === 'running'
-              ? 'Waiting for output…'
-              : 'No output.'}
+            {currentEntry.status === 'running' ? 'Waiting for output…' : 'No output.'}
           </div>
         ) : (
           currentEntry.logs.map((line, idx) => {
             const isStderr = line.startsWith('\x00STDERR\x00')
             const text = isStderr ? line.slice(8) : line
             return (
-              <pre
-                key={idx}
-                className={`log-line ${isStderr ? 'log-line--stderr' : ''}`}
-              >
+              <pre key={idx} className={`log-line ${isStderr ? 'log-line--stderr' : ''}`}>
                 {text}
               </pre>
             )

@@ -14,7 +14,9 @@ export default function MainPanel() {
           <div className="empty-state">
             <div className="empty-state-icon">🦜</div>
             <h2>PolyVault</h2>
-            <p>Select a wallet and click <strong>▶ Run</strong> to launch it.</p>
+            <p>
+              Select a wallet and click <strong>▶ Run</strong> to launch it.
+            </p>
             <p className="muted">Wallet output logs will appear here.</p>
           </div>
         </div>

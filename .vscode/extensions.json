@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    // Prettier — format on save
+    "esbenp.prettier-vscode",
+    // ESLint — live linting
+    "dbaeumer.vscode-eslint",
+    // TypeScript/React support
+    "ms-vscode.vscode-typescript-next",
+    // Better syntax highlighting for TSX
+    "styled-components.vscode-styled-components"
+  ]
+}

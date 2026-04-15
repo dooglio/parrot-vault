@@ -85,9 +85,9 @@ export function getWallets(): Wallet[] {
 
 /** Returns full internal record (including sensitive paths) for main process use only */
 export function getWalletRecord(id: number): WalletRecord {
-  const row = db
-    .prepare(`SELECT * FROM wallets WHERE id = ? AND deleted = 0`)
-    .get(id) as WalletRecord | undefined
+  const row = db.prepare(`SELECT * FROM wallets WHERE id = ? AND deleted = 0`).get(id) as
+    | WalletRecord
+    | undefined
 
   if (!row) {
     throw new Error(`Wallet id=${id} not found`)
@@ -116,7 +116,8 @@ export function addWallet(data: NewWallet): Wallet {
 export function updateWallet(id: number, data: UpdateWallet): Wallet {
   const current = getWalletRecord(id)
 
-  db.prepare(`
+  db.prepare(
+    `
     UPDATE wallets SET
       name        = ?,
       pinned      = ?,
@@ -126,14 +127,15 @@ export function updateWallet(id: number, data: UpdateWallet): Wallet {
       description = ?,
       notes       = ?
     WHERE id = ?
-  `).run(
-    data.name        ?? current.name,
-    data.pinned      !== undefined ? (data.pinned ? 1 : 0) : current.pinned,
-    data.walletType  ?? current.wallet_type,
-    data.exePath     ?? current.exe_path,
-    data.dataDir     ?? current.data_dir,
+  `
+  ).run(
+    data.name ?? current.name,
+    data.pinned !== undefined ? (data.pinned ? 1 : 0) : current.pinned,
+    data.walletType ?? current.wallet_type,
+    data.exePath ?? current.exe_path,
+    data.dataDir ?? current.data_dir,
     data.description ?? current.description,
-    data.notes       ?? current.notes,
+    data.notes ?? current.notes,
     id
   )
 
@@ -143,9 +145,9 @@ export function updateWallet(id: number, data: UpdateWallet): Wallet {
 /** Soft-deletes a wallet. Optionally removes the data_dir from disk. */
 export function deleteWallet(id: number, deleteFiles: boolean): void {
   if (deleteFiles) {
-    const row = db
-      .prepare(`SELECT data_dir FROM wallets WHERE id = ?`)
-      .get(id) as { data_dir: string } | undefined
+    const row = db.prepare(`SELECT data_dir FROM wallets WHERE id = ?`).get(id) as
+      | { data_dir: string }
+      | undefined
 
     if (row?.data_dir) {
       const fs = require('fs') as typeof import('fs')
@@ -164,7 +166,9 @@ export function deleteWallet(id: number, deleteFiles: boolean): void {
 // ─── Env Vars ────────────────────────────────────────────────────────────────
 
 export function getEnvVars(): EnvVar[] {
-  return db.prepare(`SELECT id, name, value FROM envvars ORDER BY name COLLATE NOCASE ASC`).all() as EnvVar[]
+  return db
+    .prepare(`SELECT id, name, value FROM envvars ORDER BY name COLLATE NOCASE ASC`)
+    .all() as EnvVar[]
 }
 
 export function setEnvVar(name: string, value: string): void {

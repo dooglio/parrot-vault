@@ -8,12 +8,18 @@ export default function SettingsModal() {
   const [edenPath, setEdenPath] = useState('')
 
   async function handleBrowseExodus() {
-    const path = await window.electronAPI.openFileDialog('Select Exodus Executable', exodusPath || undefined)
+    const path = await window.electronAPI.openFileDialog(
+      'Select Exodus Executable',
+      exodusPath || undefined
+    )
     if (path) setExodusPath(path)
   }
 
   async function handleBrowseEden() {
-    const path = await window.electronAPI.openFileDialog('Select Exodus Eden Executable', edenPath || undefined)
+    const path = await window.electronAPI.openFileDialog(
+      'Select Exodus Eden Executable',
+      edenPath || undefined
+    )
     if (path) setEdenPath(path)
   }
 
@@ -27,7 +33,9 @@ export default function SettingsModal() {
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>⚙️ Settings</h2>
-          <button className="modal-close" onClick={() => dispatch(closeModal())}>✕</button>
+          <button className="modal-close" onClick={() => dispatch(closeModal())}>
+            ✕
+          </button>
         </div>
 
         <div className="modal-body">
@@ -69,11 +77,7 @@ export default function SettingsModal() {
         </div>
 
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-ghost"
-            onClick={() => dispatch(closeModal())}
-          >
+          <button type="button" className="btn btn-ghost" onClick={() => dispatch(closeModal())}>
             Cancel
           </button>
           <button type="button" className="btn btn-primary" onClick={handleSave}>

@@ -69,8 +69,7 @@ export function runWallet(id: number): void {
     console.error(`Wallet id=${id} error:`, err)
     runningProcesses.delete(id)
 
-    const errorType: ProcessErrorType =
-      err.message.includes('ENOENT') ? 'failed-to-start' : 'other'
+    const errorType: ProcessErrorType = err.message.includes('ENOENT') ? 'failed-to-start' : 'other'
     sendToRenderer('process:error', id, errorType)
   })
 

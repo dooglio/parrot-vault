@@ -28,12 +28,16 @@ export default function WalletList() {
     return (
       <div className="wallet-list-empty">
         {searchTerm ? (
-          <p>No wallets match "<strong>{searchTerm}</strong>"</p>
+          <p>
+            No wallets match &ldquo;<strong>{searchTerm}</strong>&rdquo;
+          </p>
         ) : (
           <>
             <p className="empty-parrot">🦜</p>
             <p>No wallets yet.</p>
-            <p className="muted">Click <strong>New Wallet</strong> to get started.</p>
+            <p className="muted">
+              Click <strong>New Wallet</strong> to get started.
+            </p>
           </>
         )}
       </div>

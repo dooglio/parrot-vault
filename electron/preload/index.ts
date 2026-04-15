@@ -8,11 +8,9 @@ import type { Wallet, NewWallet, UpdateWallet, EnvVar, ProcessErrorType } from '
  */
 const electronAPI = {
   // ─── Wallets ──────────────────────────────────────────────────────────────
-  getWallets: (): Promise<Wallet[]> =>
-    ipcRenderer.invoke('wallets:getAll'),
+  getWallets: (): Promise<Wallet[]> => ipcRenderer.invoke('wallets:getAll'),
 
-  addWallet: (data: NewWallet): Promise<Wallet> =>
-    ipcRenderer.invoke('wallets:add', data),
+  addWallet: (data: NewWallet): Promise<Wallet> => ipcRenderer.invoke('wallets:add', data),
 
   updateWallet: (id: number, data: UpdateWallet): Promise<Wallet> =>
     ipcRenderer.invoke('wallets:update', id, data),
@@ -21,27 +19,21 @@ const electronAPI = {
     ipcRenderer.invoke('wallets:delete', id, deleteFiles),
 
   // ─── Processes ────────────────────────────────────────────────────────────
-  runWallet: (id: number): Promise<void> =>
-    ipcRenderer.invoke('process:run', id),
+  runWallet: (id: number): Promise<void> => ipcRenderer.invoke('process:run', id),
 
-  stopWallet: (id: number): Promise<void> =>
-    ipcRenderer.invoke('process:stop', id),
+  stopWallet: (id: number): Promise<void> => ipcRenderer.invoke('process:stop', id),
 
-  stopAllWallets: (): Promise<void> =>
-    ipcRenderer.invoke('process:stopAll'),
+  stopAllWallets: (): Promise<void> => ipcRenderer.invoke('process:stopAll'),
 
-  getRunningWallets: (): Promise<number[]> =>
-    ipcRenderer.invoke('process:getRunning'),
+  getRunningWallets: (): Promise<number[]> => ipcRenderer.invoke('process:getRunning'),
 
   // ─── Env vars ─────────────────────────────────────────────────────────────
-  getEnvVars: (): Promise<EnvVar[]> =>
-    ipcRenderer.invoke('envvars:getAll'),
+  getEnvVars: (): Promise<EnvVar[]> => ipcRenderer.invoke('envvars:getAll'),
 
   setEnvVar: (name: string, value: string): Promise<void> =>
     ipcRenderer.invoke('envvars:set', name, value),
 
-  deleteEnvVar: (name: string): Promise<void> =>
-    ipcRenderer.invoke('envvars:delete', name),
+  deleteEnvVar: (name: string): Promise<void> => ipcRenderer.invoke('envvars:delete', name),
 
   // ─── File dialogs ─────────────────────────────────────────────────────────
   openFileDialog: (title: string, defaultPath?: string): Promise<string | null> =>

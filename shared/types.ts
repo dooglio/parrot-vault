@@ -5,7 +5,7 @@ export interface Wallet {
   id: number
   name: string
   pinned: boolean
-  walletType: string   // e.g. "Exodus", "Electrum", "MetaMask"
+  walletType: string // e.g. "Exodus", "Electrum", "MetaMask"
   description: string
   notes: string
   // dataDir and exePath are intentionally excluded — main process only
@@ -17,8 +17,8 @@ export interface NewWallet {
   walletType: string
   description: string
   notes: string
-  dataDir: string     // provided by renderer when creating, stored in main only
-  exePath: string     // provided by renderer when creating, stored in main only
+  dataDir: string // provided by renderer when creating, stored in main only
+  exePath: string // provided by renderer when creating, stored in main only
 }
 
 export interface UpdateWallet {

@@ -34,13 +34,15 @@ export default function DeleteDialog() {
       <div className="modal modal--sm" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Delete Wallet</h2>
-          <button className="modal-close" onClick={() => dispatch(closeModal())}>✕</button>
+          <button className="modal-close" onClick={() => dispatch(closeModal())}>
+            ✕
+          </button>
         </div>
 
         <div className="modal-body">
           <p>
-            Are you sure you want to delete <strong>"{wallet.name}"</strong>?
-            This cannot be undone.
+            Are you sure you want to delete <strong>&ldquo;{wallet.name}&rdquo;</strong>? This
+            cannot be undone.
           </p>
 
           <div className="form-row form-row--checkbox">

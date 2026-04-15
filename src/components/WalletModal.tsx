@@ -38,12 +38,18 @@ export default function WalletModal() {
   }, [isEditing, existing])
 
   async function handleBrowseExe() {
-    const path = await window.electronAPI.openFileDialog('Select Wallet Executable', exePath || undefined)
+    const path = await window.electronAPI.openFileDialog(
+      'Select Wallet Executable',
+      exePath || undefined
+    )
     if (path) setExePath(path)
   }
 
   async function handleBrowseDir() {
-    const path = await window.electronAPI.openDirectoryDialog('Select Data Directory', dataDir || undefined)
+    const path = await window.electronAPI.openDirectoryDialog(
+      'Select Data Directory',
+      dataDir || undefined
+    )
     if (path) setDataDir(path)
   }
 
@@ -100,7 +106,9 @@ export default function WalletModal() {
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{isEditing ? 'Edit Wallet' : 'Add New Wallet'}</h2>
-          <button className="modal-close" onClick={() => dispatch(closeModal())}>✕</button>
+          <button className="modal-close" onClick={() => dispatch(closeModal())}>
+            ✕
+          </button>
         </div>
 
         <form className="modal-form" onSubmit={handleSubmit}>
@@ -207,18 +215,10 @@ export default function WalletModal() {
           )}
 
           <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={() => dispatch(closeModal())}
-            >
+            <button type="button" className="btn btn-ghost" onClick={() => dispatch(closeModal())}>
               Cancel
             </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={!name.trim() || submitting}
-            >
+            <button type="submit" className="btn btn-primary" disabled={!name.trim() || submitting}>
               {submitting ? 'Saving…' : isEditing ? 'Save Changes' : 'Add Wallet'}
             </button>
           </div>

@@ -47,7 +47,9 @@ export default function EnvVarsModal() {
       <div className="modal modal--lg" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>⚙ Environment Variables</h2>
-          <button className="modal-close" onClick={() => dispatch(closeModal())}>✕</button>
+          <button className="modal-close" onClick={() => dispatch(closeModal())}>
+            ✕
+          </button>
         </div>
 
         <div className="modal-body">
@@ -69,7 +71,9 @@ export default function EnvVarsModal() {
               <tbody>
                 {envVars.length === 0 && (
                   <tr>
-                    <td colSpan={3} className="env-empty">No environment variables set.</td>
+                    <td colSpan={3} className="env-empty">
+                      No environment variables set.
+                    </td>
                   </tr>
                 )}
                 {envVars.map((v) => (
@@ -91,14 +95,27 @@ export default function EnvVarsModal() {
                     <td className="env-actions">
                       {editingId === v.id ? (
                         <>
-                          <button className="btn btn-sm btn-primary" onClick={() => handleSaveEdit(v.name)}>Save</button>
-                          <button className="btn btn-sm btn-ghost" onClick={() => setEditingId(null)}>Cancel</button>
+                          <button
+                            className="btn btn-sm btn-primary"
+                            onClick={() => handleSaveEdit(v.name)}
+                          >
+                            Save
+                          </button>
+                          <button
+                            className="btn btn-sm btn-ghost"
+                            onClick={() => setEditingId(null)}
+                          >
+                            Cancel
+                          </button>
                         </>
                       ) : (
                         <>
                           <button
                             className="btn btn-sm btn-ghost"
-                            onClick={() => { setEditingId(v.id); setEditValue(v.value) }}
+                            onClick={() => {
+                              setEditingId(v.id)
+                              setEditValue(v.value)
+                            }}
                           >
                             ✎
                           </button>
@@ -133,7 +150,11 @@ export default function EnvVarsModal() {
               className="env-add-value"
               onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
             />
-            <button className="btn btn-primary btn-sm" onClick={handleAdd} disabled={!newName.trim()}>
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={handleAdd}
+              disabled={!newName.trim()}
+            >
               Add
             </button>
           </div>

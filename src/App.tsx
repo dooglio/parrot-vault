@@ -38,9 +38,7 @@ export default function App() {
       <Sidebar />
       <MainPanel />
 
-      {(activeModal === 'add-wallet' || activeModal === 'edit-wallet') && (
-        <WalletModal />
-      )}
+      {(activeModal === 'add-wallet' || activeModal === 'edit-wallet') && <WalletModal />}
       {activeModal === 'delete-wallet' && <DeleteDialog />}
       {activeModal === 'settings' && <SettingsModal />}
       {activeModal === 'envvars' && <EnvVarsModal />}

@@ -68,9 +68,7 @@ export default function WalletCard({ wallet }: Props) {
           <div>
             <div className="wallet-name">{wallet.name}</div>
             <div className="wallet-type">{wallet.walletType || 'Wallet'}</div>
-            {wallet.description && (
-              <div className="wallet-description">{wallet.description}</div>
-            )}
+            {wallet.description && <div className="wallet-description">{wallet.description}</div>}
           </div>
         </div>
 
@@ -85,11 +83,7 @@ export default function WalletCard({ wallet }: Props) {
 
       <div className="wallet-card-actions">
         {isRunning ? (
-          <button
-            className="btn btn-sm btn-danger"
-            onClick={handleStop}
-            title="Stop wallet"
-          >
+          <button className="btn btn-sm btn-danger" onClick={handleStop} title="Stop wallet">
             ■ Stop
           </button>
         ) : (

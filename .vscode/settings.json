@@ -1,0 +1,39 @@
+{
+  // ── Prettier: format on save ───────────────────────────────────────────
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // ── ESLint: live linting + fix on save ────────────────────────────────
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": ["javascript", "typescript", "typescriptreact"],
+  "eslint.useFlatConfig": true,
+
+  // ── TypeScript: use the project's own tsconfig ─────────────────────────
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  // ── File associations ─────────────────────────────────────────────────
+  "files.associations": {
+    "*.tsx": "typescriptreact"
+  },
+
+  // ── Trim trailing whitespace & ensure final newline ───────────────────
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  // ── Search/file watcher exclusions ───────────────────────────────────
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/dist-electron": true,
+    "**/release": true,
+    "**/build/icons": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/dist-electron/**": true
+  }
+}
