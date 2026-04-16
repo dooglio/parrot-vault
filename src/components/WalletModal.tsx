@@ -1,26 +1,27 @@
 import { useState, useEffect } from 'react'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useAppSelector'
-import { closeModal, showNotification } from '../store/uiSlice'
+import { closeModal, showNotification, openModal } from '../store/uiSlice'
 import { addWallet, updateWallet } from '../store/walletsSlice'
 import { runWallet } from '../store/processesSlice'
 import type { NewWallet } from '../../shared/types'
+import { getIconEmoji } from './WalletTypeDialog'
 
 export default function WalletModal() {
   const dispatch = useAppDispatch()
   const activeModal = useAppSelector((s) => s.ui.activeModal)
   const selectedId = useAppSelector((s) => s.ui.selectedWalletId)
   const wallets = useAppSelector((s) => s.wallets.items)
+  const walletTypes = useAppSelector((s) => s.walletTypes.items)
 
   const isEditing = activeModal === 'edit-wallet'
   const existing = isEditing ? wallets.find((w) => w.id === selectedId) : null
 
   const [name, setName] = useState('')
-  const [walletType, setWalletType] = useState('')
+  const [walletTypeId, setWalletTypeId] = useState<number | ''>('')
   const [description, setDescription] = useState('')
   const [notes, setNotes] = useState('')
   const [pinned, setPinned] = useState(false)
-  const [exePath, setExePath] = useState('')
   const [dataDir, setDataDir] = useState('')
   const [launchAfter, setLaunchAfter] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -28,22 +29,17 @@ export default function WalletModal() {
   useEffect(() => {
     if (isEditing && existing) {
       setName(existing.name)
-      setWalletType(existing.walletType)
+      // Match the existing walletType name back to an id
+      const match = walletTypes.find((wt) => wt.name === existing.walletType)
+      setWalletTypeId(match ? match.id : '')
       setDescription(existing.description)
       setNotes(existing.notes)
       setPinned(existing.pinned)
-      // exePath and dataDir are not in the renderer Wallet type (by design)
-      // They remain as the user re-enters them if needed
+      // dataDir is not in renderer Wallet type — user re-enters if needed
     }
-  }, [isEditing, existing])
+  }, [isEditing, existing, walletTypes])
 
-  async function handleBrowseExe() {
-    const path = await window.electronAPI.openFileDialog(
-      'Select Wallet Executable',
-      exePath || undefined
-    )
-    if (path) setExePath(path)
-  }
+  const selectedType = walletTypes.find((wt) => wt.id === walletTypeId) ?? null
 
   async function handleBrowseDir() {
     const path = await window.electronAPI.openDirectoryDialog(
@@ -65,11 +61,11 @@ export default function WalletModal() {
             id: selectedId,
             data: {
               name: name.trim(),
-              walletType: walletType.trim(),
+              walletType: selectedType?.name ?? '',
+              exePath: selectedType?.exePath ?? '',
               description: description.trim(),
               notes: notes.trim(),
               pinned,
-              ...(exePath ? { exePath } : {}),
               ...(dataDir ? { dataDir } : {}),
             },
           })
@@ -78,11 +74,11 @@ export default function WalletModal() {
       } else {
         const data: NewWallet = {
           name: name.trim(),
-          walletType: walletType.trim(),
+          walletType: selectedType?.name ?? '',
+          exePath: selectedType?.exePath ?? '',
           description: description.trim(),
           notes: notes.trim(),
           pinned,
-          exePath,
           dataDir,
         }
         const wallet = await dispatch(addWallet(data)).unwrap()
@@ -125,48 +121,80 @@ export default function WalletModal() {
             />
           </div>
 
+          {/* Wallet App Type — dropdown populated from Settings */}
           <div className="form-row">
-            <label htmlFor="wallet-type">Wallet Type</label>
-            <input
-              id="wallet-type"
-              type="text"
-              value={walletType}
-              onChange={(e) => setWalletType(e.target.value)}
-              placeholder="Exodus, Electrum, MetaMask…"
-            />
+            <label htmlFor="wallet-type">Wallet App</label>
+            {walletTypes.length === 0 ? (
+              <div className="wallet-type-empty-hint">
+                <span className="muted" style={{ fontSize: 13 }}>
+                  No wallet apps configured.{' '}
+                </span>
+                <button
+                  type="button"
+                  className="btn-inline-link"
+                  onClick={() => {
+                    dispatch(closeModal())
+                    dispatch(openModal('settings'))
+                  }}
+                >
+                  Open Settings to add one.
+                </button>
+              </div>
+            ) : (
+              <>
+                <select
+                  id="wallet-type"
+                  className="wt-select"
+                  value={walletTypeId}
+                  onChange={(e) =>
+                    setWalletTypeId(e.target.value === '' ? '' : Number(e.target.value))
+                  }
+                >
+                  <option value="">— Select a wallet app —</option>
+                  {walletTypes.map((wt) => (
+                    <option key={wt.id} value={wt.id}>
+                      {getIconEmoji(wt.icon)} {wt.name}
+                    </option>
+                  ))}
+                </select>
+                {selectedType && (
+                  <p className="form-hint">
+                    <code>{selectedType.exePath || '(no path set)'}</code>
+                    {selectedType.dataDirFlag && (
+                      <>
+                        {' '}
+                        · datadir flag: <code>{selectedType.dataDirFlag}</code>
+                      </>
+                    )}
+                  </p>
+                )}
+              </>
+            )}
           </div>
 
-          <div className="form-row">
-            <label htmlFor="wallet-exe">Executable Path</label>
-            <div className="input-with-btn">
-              <input
-                id="wallet-exe"
-                type="text"
-                value={exePath}
-                onChange={(e) => setExePath(e.target.value)}
-                placeholder="/Applications/Exodus.app/Contents/MacOS/Exodus"
-              />
-              <button type="button" className="btn btn-ghost btn-sm" onClick={handleBrowseExe}>
-                Browse…
-              </button>
+          {/* Data directory — only shown if the selected type supports a datadir flag */}
+          {(selectedType?.dataDirFlag || !selectedType) && (
+            <div className="form-row">
+              <label htmlFor="wallet-dir">Data Directory</label>
+              <div className="input-with-btn">
+                <input
+                  id="wallet-dir"
+                  type="text"
+                  value={dataDir}
+                  onChange={(e) => setDataDir(e.target.value)}
+                  placeholder="Leave blank to use default"
+                />
+                <button type="button" className="btn btn-ghost btn-sm" onClick={handleBrowseDir}>
+                  Browse…
+                </button>
+              </div>
+              {selectedType?.dataDirFlag && (
+                <p className="form-hint">
+                  Passed as <code>{selectedType.dataDirFlag} &lt;path&gt;</code> when launching.
+                </p>
+              )}
             </div>
-          </div>
-
-          <div className="form-row">
-            <label htmlFor="wallet-dir">Data Directory</label>
-            <div className="input-with-btn">
-              <input
-                id="wallet-dir"
-                type="text"
-                value={dataDir}
-                onChange={(e) => setDataDir(e.target.value)}
-                placeholder="Leave blank to use default"
-              />
-              <button type="button" className="btn btn-ghost btn-sm" onClick={handleBrowseDir}>
-                Browse…
-              </button>
-            </div>
-          </div>
+          )}
 
           <div className="form-row">
             <label htmlFor="wallet-desc">Description</label>

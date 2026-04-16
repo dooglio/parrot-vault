@@ -4,6 +4,7 @@ import { useAppSelector } from './hooks/useAppSelector'
 import { useProcessEvents } from './hooks/useProcessEvents'
 import { fetchWallets } from './store/walletsSlice'
 import { fetchRunningWallets } from './store/processesSlice'
+import { fetchWalletTypes } from './store/walletTypesSlice'
 import { clearNotification } from './store/uiSlice'
 import Sidebar from './components/Sidebar'
 import MainPanel from './components/MainPanel'
@@ -24,6 +25,7 @@ export default function App() {
   useEffect(() => {
     dispatch(fetchWallets())
     dispatch(fetchRunningWallets())
+    dispatch(fetchWalletTypes())
   }, [dispatch])
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { spawn, ChildProcess } from 'child_process'
 import { BrowserWindow } from 'electron'
-import { getWalletRecord, getEnvVarsMap } from './db'
+import { getWalletRecord, getEnvVarsMap, getDataDirFlagForWalletType } from './db'
 import type { ProcessErrorType } from '../../shared/types'
 
 interface ManagedProcess {
@@ -38,7 +38,12 @@ export function runWallet(id: number): void {
 
   const args: string[] = []
   if (record.data_dir) {
-    args.push('--datadir', record.data_dir)
+    // Look up the datadir flag from the wallet type definition (e.g. "--datadir", "-datadir")
+    // Falls back to empty string if the type has no flag, in which case we skip it.
+    const dataDirFlag = getDataDirFlagForWalletType(record.wallet_type)
+    if (dataDirFlag) {
+      args.push(dataDirFlag, record.data_dir)
+    }
   }
 
   // Merge system env with custom env vars from DB

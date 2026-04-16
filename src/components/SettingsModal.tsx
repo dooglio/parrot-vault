@@ -1,90 +1,168 @@
 import { useState } from 'react'
 import { useAppDispatch } from '../hooks/useAppDispatch'
+import { useAppSelector } from '../hooks/useAppSelector'
 import { closeModal, showNotification } from '../store/uiSlice'
+import { deleteWalletType } from '../store/walletTypesSlice'
+import type { WalletTypeDefinition } from '../../shared/types'
+import WalletTypeDialog, { getIconEmoji } from './WalletTypeDialog'
 
 export default function SettingsModal() {
   const dispatch = useAppDispatch()
-  const [exodusPath, setExodusPath] = useState('')
-  const [edenPath, setEdenPath] = useState('')
+  const walletTypes = useAppSelector((s) => s.walletTypes.items)
 
-  async function handleBrowseExodus() {
-    const path = await window.electronAPI.openFileDialog(
-      'Select Exodus Executable',
-      exodusPath || undefined
-    )
-    if (path) setExodusPath(path)
+  /** Which wallet type is being edited (null = adding new) */
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editTarget, setEditTarget] = useState<WalletTypeDefinition | null>(null)
+  /** ID pending confirmation for deletion */
+  const [deletingId, setDeletingId] = useState<number | null>(null)
+
+  function handleAdd() {
+    setEditTarget(null)
+    setDialogOpen(true)
   }
 
-  async function handleBrowseEden() {
-    const path = await window.electronAPI.openFileDialog(
-      'Select Exodus Eden Executable',
-      edenPath || undefined
-    )
-    if (path) setEdenPath(path)
+  function handleEdit(wt: WalletTypeDefinition) {
+    setEditTarget(wt)
+    setDialogOpen(true)
   }
 
-  function handleSave() {
-    dispatch(showNotification({ message: 'Settings saved.', type: 'success' }))
-    dispatch(closeModal())
+  async function handleDelete(id: number) {
+    try {
+      await dispatch(deleteWalletType(id)).unwrap()
+      dispatch(showNotification({ message: 'Wallet app removed.', type: 'success' }))
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Delete failed'
+      dispatch(showNotification({ message: msg, type: 'error' }))
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   return (
-    <div className="modal-overlay" onClick={() => dispatch(closeModal())}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2>⚙️ Settings</h2>
-          <button className="modal-close" onClick={() => dispatch(closeModal())}>
-            ✕
-          </button>
-        </div>
-
-        <div className="modal-body">
-          <p className="muted">
-            Set default paths for common wallets. These can be overridden per wallet.
-          </p>
-
-          <div className="form-row">
-            <label htmlFor="exodus-path">Exodus Path</label>
-            <div className="input-with-btn">
-              <input
-                id="exodus-path"
-                type="text"
-                value={exodusPath}
-                onChange={(e) => setExodusPath(e.target.value)}
-                placeholder="/Applications/Exodus.app/Contents/MacOS/Exodus"
-              />
-              <button type="button" className="btn btn-ghost btn-sm" onClick={handleBrowseExodus}>
-                Browse…
-              </button>
-            </div>
+    <>
+      <div className="modal-overlay" onClick={() => dispatch(closeModal())}>
+        <div className="modal modal--lg" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2>⚙️ Settings</h2>
+            <button className="modal-close" onClick={() => dispatch(closeModal())}>
+              ✕
+            </button>
           </div>
 
-          <div className="form-row">
-            <label htmlFor="eden-path">Exodus Eden Path</label>
-            <div className="input-with-btn">
-              <input
-                id="eden-path"
-                type="text"
-                value={edenPath}
-                onChange={(e) => setEdenPath(e.target.value)}
-                placeholder="/Applications/ExodusEden.app/Contents/MacOS/ExodusEden"
-              />
-              <button type="button" className="btn btn-ghost btn-sm" onClick={handleBrowseEden}>
-                Browse…
+          <div className="modal-body">
+            {/* Section header */}
+            <div className="settings-section-header">
+              <div>
+                <h3 className="settings-section-title">Wallet Apps</h3>
+                <p className="muted" style={{ fontSize: 13, marginTop: 2 }}>
+                  Define the wallet applications available on this machine. These provide the
+                  executable path and command-line options used when launching wallets.
+                </p>
+              </div>
+              <button className="btn btn-primary btn-sm" onClick={handleAdd}>
+                + Add
               </button>
             </div>
-          </div>
-        </div>
 
-        <div className="modal-footer">
-          <button type="button" className="btn btn-ghost" onClick={() => dispatch(closeModal())}>
-            Cancel
-          </button>
-          <button type="button" className="btn btn-primary" onClick={handleSave}>
-            Save
-          </button>
+            {/* Wallet type list */}
+            {walletTypes.length === 0 ? (
+              <div className="wt-empty">
+                <span style={{ fontSize: 36 }}>🦋</span>
+                <p>No wallet apps configured yet.</p>
+                <p className="muted" style={{ fontSize: 12 }}>
+                  Press <strong>+ Add</strong> to set up your first wallet application.
+                </p>
+              </div>
+            ) : (
+              <table className="wt-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: 36 }}></th>
+                    <th>Name</th>
+                    <th>Executable</th>
+                    <th>Datadir Flag</th>
+                    <th style={{ width: 80 }}></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {walletTypes.map((wt) => (
+                    <tr key={wt.id} className="wt-row">
+                      <td className="wt-icon-cell">
+                        <span className="wt-icon" title={wt.icon}>
+                          {getIconEmoji(wt.icon)}
+                        </span>
+                      </td>
+                      <td className="wt-name">{wt.name}</td>
+                      <td className="wt-exe" title={wt.exePath}>
+                        {wt.exePath || <span className="muted">—</span>}
+                      </td>
+                      <td className="wt-flag">
+                        {wt.dataDirFlag ? (
+                          <code>{wt.dataDirFlag}</code>
+                        ) : (
+                          <span className="muted">none</span>
+                        )}
+                      </td>
+                      <td className="wt-actions">
+                        {deletingId === wt.id ? (
+                          <span className="wt-confirm-delete">
+                            <button
+                              className="btn btn-danger btn-sm"
+                              onClick={() => handleDelete(wt.id)}
+                            >
+                              Confirm
+                            </button>
+                            <button
+                              className="btn btn-ghost btn-sm"
+                              onClick={() => setDeletingId(null)}
+                            >
+                              Cancel
+                            </button>
+                          </span>
+                        ) : (
+                          <>
+                            <button
+                              className="btn btn-ghost btn-sm"
+                              onClick={() => handleEdit(wt)}
+                              title="Edit"
+                            >
+                              ✏️
+                            </button>
+                            <button
+                              className="btn btn-ghost btn-sm btn-danger-ghost"
+                              onClick={() => setDeletingId(wt.id)}
+                              title="Delete"
+                            >
+                              🗑
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          <div className="modal-footer">
+            <button type="button" className="btn btn-ghost" onClick={() => dispatch(closeModal())}>
+              Close
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Add / Edit dialog — layered on top of this modal */}
+      {dialogOpen && (
+        <WalletTypeDialog
+          existing={editTarget}
+          onClose={() => {
+            setDialogOpen(false)
+            setEditTarget(null)
+          }}
+        />
+      )}
+    </>
   )
 }

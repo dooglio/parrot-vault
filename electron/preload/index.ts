@@ -1,5 +1,14 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import type { Wallet, NewWallet, UpdateWallet, EnvVar, ProcessErrorType } from '../../shared/types'
+import type {
+  Wallet,
+  NewWallet,
+  UpdateWallet,
+  EnvVar,
+  ProcessErrorType,
+  WalletTypeDefinition,
+  NewWalletTypeDefinition,
+  UpdateWalletTypeDefinition,
+} from '../../shared/types'
 
 /**
  * Secure IPC bridge exposed to the renderer as window.electronAPI
@@ -35,12 +44,27 @@ const electronAPI = {
 
   deleteEnvVar: (name: string): Promise<void> => ipcRenderer.invoke('envvars:delete', name),
 
+  // ─── Wallet Types ──────────────────────────────────────────────────────────
+  getWalletTypes: (): Promise<WalletTypeDefinition[]> => ipcRenderer.invoke('walletTypes:getAll'),
+
+  addWalletType: (data: NewWalletTypeDefinition): Promise<WalletTypeDefinition> =>
+    ipcRenderer.invoke('walletTypes:add', data),
+
+  updateWalletType: (id: number, data: UpdateWalletTypeDefinition): Promise<WalletTypeDefinition> =>
+    ipcRenderer.invoke('walletTypes:update', id, data),
+
+  deleteWalletType: (id: number): Promise<void> => ipcRenderer.invoke('walletTypes:delete', id),
+
   // ─── File dialogs ─────────────────────────────────────────────────────────
   openFileDialog: (title: string, defaultPath?: string): Promise<string | null> =>
     ipcRenderer.invoke('dialog:openFile', title, defaultPath),
 
   openDirectoryDialog: (title: string, defaultPath?: string): Promise<string | null> =>
     ipcRenderer.invoke('dialog:openDirectory', title, defaultPath),
+
+  /** Extract icon from a file/app — returns base64 PNG data URL or null */
+  getFileIcon: (filePath: string): Promise<string | null> =>
+    ipcRenderer.invoke('dialog:getFileIcon', filePath),
 
   // ─── Process events (main → renderer push) ────────────────────────────────
   onProcessStart: (cb: (id: number) => void) => {

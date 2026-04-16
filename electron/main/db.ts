@@ -1,7 +1,16 @@
 import Database from 'better-sqlite3'
 import path from 'path'
 import { app } from 'electron'
-import type { Wallet, NewWallet, UpdateWallet, EnvVar } from '../../shared/types'
+import type {
+  Wallet,
+  NewWallet,
+  UpdateWallet,
+  EnvVar,
+  WalletTypeDefinition,
+  NewWalletTypeDefinition,
+  UpdateWalletTypeDefinition,
+  WalletPreset,
+} from '../../shared/types'
 
 // Internal DB record shape (includes sensitive fields not exposed to renderer)
 export interface WalletRecord {
@@ -42,6 +51,15 @@ export function initDb(): void {
       id    INTEGER PRIMARY KEY ASC,
       name  TEXT NOT NULL UNIQUE,
       value TEXT NOT NULL DEFAULT ''
+    );
+
+    CREATE TABLE IF NOT EXISTS wallet_types (
+      id             INTEGER PRIMARY KEY ASC,
+      name           TEXT NOT NULL,
+      icon           TEXT NOT NULL DEFAULT 'custom',
+      exe_path       TEXT NOT NULL DEFAULT '',
+      data_dir_flag  TEXT NOT NULL DEFAULT '',
+      preset         TEXT NOT NULL DEFAULT 'custom'
     );
   `)
 
@@ -183,4 +201,87 @@ export function deleteEnvVar(name: string): void {
 export function getEnvVarsMap(): Record<string, string> {
   const vars = getEnvVars()
   return Object.fromEntries(vars.map((v) => [v.name, v.value]))
+}
+
+// ─── Wallet Types ─────────────────────────────────────────────────────────────
+
+interface WalletTypeRow {
+  id: number
+  name: string
+  icon: string
+  exe_path: string
+  data_dir_flag: string
+  preset: string
+}
+
+function rowToWalletType(r: WalletTypeRow): WalletTypeDefinition {
+  return {
+    id: r.id,
+    name: r.name,
+    icon: r.icon,
+    exePath: r.exe_path,
+    dataDirFlag: r.data_dir_flag,
+    preset: r.preset as WalletPreset,
+  }
+}
+
+export function getWalletTypes(): WalletTypeDefinition[] {
+  const rows = db
+    .prepare(
+      `SELECT id, name, icon, exe_path, data_dir_flag, preset FROM wallet_types ORDER BY name COLLATE NOCASE ASC`
+    )
+    .all() as WalletTypeRow[]
+  return rows.map(rowToWalletType)
+}
+
+export function getWalletTypeRecord(id: number): WalletTypeDefinition {
+  const row = db
+    .prepare(
+      `SELECT id, name, icon, exe_path, data_dir_flag, preset FROM wallet_types WHERE id = ?`
+    )
+    .get(id) as WalletTypeRow | undefined
+  if (!row) throw new Error(`WalletType id=${id} not found`)
+  return rowToWalletType(row)
+}
+
+export function addWalletType(data: NewWalletTypeDefinition): WalletTypeDefinition {
+  const result = db
+    .prepare(
+      `INSERT INTO wallet_types (name, icon, exe_path, data_dir_flag, preset) VALUES (?, ?, ?, ?, ?)`
+    )
+    .run(data.name, data.icon, data.exePath, data.dataDirFlag, data.preset)
+  return getWalletTypeRecord(result.lastInsertRowid as number)
+}
+
+export function updateWalletType(
+  id: number,
+  data: UpdateWalletTypeDefinition
+): WalletTypeDefinition {
+  const current = getWalletTypeRecord(id)
+  db.prepare(
+    `UPDATE wallet_types SET name = ?, icon = ?, exe_path = ?, data_dir_flag = ?, preset = ? WHERE id = ?`
+  ).run(
+    data.name ?? current.name,
+    data.icon ?? current.icon,
+    data.exePath ?? current.exePath,
+    data.dataDirFlag !== undefined ? data.dataDirFlag : current.dataDirFlag,
+    data.preset ?? current.preset,
+    id
+  )
+  return getWalletTypeRecord(id)
+}
+
+export function deleteWalletType(id: number): void {
+  db.prepare(`DELETE FROM wallet_types WHERE id = ?`).run(id)
+}
+
+/**
+ * Look up the data_dir_flag for a wallet by its wallet_type name.
+ * Returns empty string if no matching type or type has no flag.
+ */
+export function getDataDirFlagForWalletType(walletTypeName: string): string {
+  const row = db
+    .prepare(`SELECT data_dir_flag FROM wallet_types WHERE name = ? LIMIT 1`)
+    .get(walletTypeName) as { data_dir_flag: string } | undefined
+  return row?.data_dir_flag ?? ''
 }

@@ -813,3 +813,191 @@ body,
 strong {
   font-weight: 600;
 }
+
+/* ─── Settings Modal ────────────────────────────────────────────────────── */
+.settings-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.settings-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+/* ─── Wallet Types Table ────────────────────────────────────────────────── */
+.wt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.wt-table th {
+  text-align: left;
+  padding: 5px 10px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+.wt-row td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+.wt-row:last-child td {
+  border-bottom: none;
+}
+.wt-icon-cell {
+  font-size: 18px;
+  text-align: center;
+  width: 36px;
+}
+.wt-name {
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+.wt-exe {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--color-muted);
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wt-flag code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--color-accent);
+  background: rgba(0, 212, 170, 0.08);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.wt-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+.wt-confirm-delete {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.wt-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--color-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Wallet Type Dialog ─────────────────────────────────────────────────── */
+.wt-select {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: 13px;
+  padding: 8px 10px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color var(--transition);
+  width: 100%;
+  cursor: pointer;
+}
+.wt-select:focus {
+  border-color: var(--color-accent);
+}
+.wt-select option {
+  background: var(--color-surface2);
+  color: var(--color-text);
+}
+
+.wt-icon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.wt-icon-btn {
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color var(--transition),
+    background var(--transition);
+  padding: 0;
+}
+.wt-icon-btn:hover {
+  border-color: var(--color-muted);
+  background: var(--color-surface2);
+}
+.wt-icon-btn--selected {
+  border-color: var(--color-accent) !important;
+  background: rgba(0, 212, 170, 0.1) !important;
+}
+.wt-icon-btn--img {
+  overflow: hidden;
+}
+.wt-detected-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.form-hint {
+  font-size: 11px;
+  color: var(--color-muted);
+  line-height: 1.5;
+  margin-top: 2px;
+}
+.form-hint code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  color: var(--color-accent);
+  background: rgba(0, 212, 170, 0.08);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ─── Inline link button ─────────────────────────────────────────────────── */
+.btn-inline-link {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.btn-inline-link:hover {
+  color: var(--color-accent-dim);
+}
+
+.wallet-type-empty-hint {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 10px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
