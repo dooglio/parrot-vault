@@ -30,6 +30,11 @@ export function runWallet(id: number): void {
   }
 
   const record = getWalletRecord(id)
+  console.info(
+    `Starting wallet id=${id} with exePath="${record.exe_path}" and dataDir="${record.data_dir}"`
+  )
+
+  console.info('record=', record)
 
   if (!record.exe_path) {
     sendToRenderer('process:error', id, 'failed-to-start' as ProcessErrorType)
@@ -41,6 +46,7 @@ export function runWallet(id: number): void {
     // Look up the datadir flag from the wallet type definition (e.g. "--datadir", "-datadir")
     // Falls back to empty string if the type has no flag, in which case we skip it.
     const dataDirFlag = getDataDirFlagForWalletType(record.wallet_type)
+    console.info(`Using dataDirFlag="${dataDirFlag}" for wallet type="${record.wallet_type}"`)
     if (dataDirFlag) {
       args.push(dataDirFlag, record.data_dir)
     }

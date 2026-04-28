@@ -98,6 +98,11 @@ const processesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(runWallet.pending, (state, action) => {
+      const id = action.meta.arg
+      state.entries[id] = { id, status: 'running', logs: [] }
+    })
+
     builder.addCase(fetchRunningWallets.fulfilled, (state, action: PayloadAction<number[]>) => {
       // Sync running state on app init
       for (const id of action.payload) {

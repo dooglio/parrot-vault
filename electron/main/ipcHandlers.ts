@@ -1,4 +1,5 @@
 import { ipcMain, dialog, app, nativeImage } from 'electron'
+import * as os from 'os'
 import * as db from './db'
 import * as pm from './processManager'
 import type {
@@ -79,6 +80,12 @@ export function registerIpcHandlers(): void {
 
   ipcMain.handle('walletTypes:delete', (_event, id: number) => {
     db.deleteWalletType(id)
+  })
+
+  // ─── Platform info ─────────────────────────────────────────────────────────
+
+  ipcMain.handle('app:getPlatformDefaults', () => {
+    return { platform: process.platform, homeDir: os.homedir() }
   })
 
   // ─── File dialogs (safe: returns path chosen by user, no raw FS exposure) ─

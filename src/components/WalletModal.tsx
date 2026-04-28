@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useAppSelector'
 import { closeModal, showNotification, openModal } from '../store/uiSlice'
@@ -25,6 +25,14 @@ export default function WalletModal() {
   const [dataDir, setDataDir] = useState('')
   const [launchAfter, setLaunchAfter] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const platformRef = useRef<{ platform: string; homeDir: string } | null>(null)
+
+  // Fetch platform info once on mount
+  useEffect(() => {
+    window.electronAPI.getPlatformDefaults().then((info) => {
+      platformRef.current = info
+    })
+  }, [])
 
   useEffect(() => {
     if (isEditing && existing) {
@@ -40,6 +48,26 @@ export default function WalletModal() {
   }, [isEditing, existing, walletTypes])
 
   const selectedType = walletTypes.find((wt) => wt.id === walletTypeId) ?? null
+
+  // Auto-populate dataDir when selecting an Exodus wallet type for the first time
+  useEffect(() => {
+    if (isEditing || !selectedType || selectedType.preset !== 'exodus') return
+    if (dataDir) return // don't override user-entered value
+
+    const info = platformRef.current
+    if (!info) return
+
+    const { platform, homeDir } = info
+    let defaultDir = ''
+    if (platform === 'darwin') {
+      defaultDir = `${homeDir}/Library/Application Support/Exodus`
+    } else if (platform === 'win32') {
+      defaultDir = `${homeDir}\\AppData\\Roaming\\Exodus`
+    } else {
+      defaultDir = `${homeDir}/.config/Exodus`
+    }
+    setDataDir(defaultDir)
+  }, [selectedType, isEditing])
 
   async function handleBrowseDir() {
     const path = await window.electronAPI.openDirectoryDialog(
@@ -172,29 +200,26 @@ export default function WalletModal() {
             )}
           </div>
 
-          {/* Data directory — only shown if the selected type supports a datadir flag */}
-          {(selectedType?.dataDirFlag || !selectedType) && (
-            <div className="form-row">
-              <label htmlFor="wallet-dir">Data Directory</label>
-              <div className="input-with-btn">
-                <input
-                  id="wallet-dir"
-                  type="text"
-                  value={dataDir}
-                  onChange={(e) => setDataDir(e.target.value)}
-                  placeholder="Leave blank to use default"
-                />
-                <button type="button" className="btn btn-ghost btn-sm" onClick={handleBrowseDir}>
-                  Browse…
-                </button>
-              </div>
-              {selectedType?.dataDirFlag && (
-                <p className="form-hint">
-                  Passed as <code>{selectedType.dataDirFlag} &lt;path&gt;</code> when launching.
-                </p>
-              )}
+          <div className="form-row">
+            <label htmlFor="wallet-dir">Data Directory</label>
+            <div className="input-with-btn">
+              <input
+                id="wallet-dir"
+                type="text"
+                value={dataDir}
+                onChange={(e) => setDataDir(e.target.value)}
+                placeholder="Leave blank to use default"
+              />
+              <button type="button" className="btn btn-ghost btn-sm" onClick={handleBrowseDir}>
+                Browse…
+              </button>
             </div>
-          )}
+            {selectedType?.dataDirFlag && (
+              <p className="form-hint">
+                Passed as <code>{selectedType.dataDirFlag} &lt;path&gt;</code> when launching.
+              </p>
+            )}
+          </div>
 
           <div className="form-row">
             <label htmlFor="wallet-desc">Description</label>

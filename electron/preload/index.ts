@@ -55,6 +55,10 @@ const electronAPI = {
 
   deleteWalletType: (id: number): Promise<void> => ipcRenderer.invoke('walletTypes:delete', id),
 
+  // ─── Platform info ─────────────────────────────────────────────────────────
+  getPlatformDefaults: (): Promise<{ platform: string; homeDir: string }> =>
+    ipcRenderer.invoke('app:getPlatformDefaults'),
+
   // ─── File dialogs ─────────────────────────────────────────────────────────
   openFileDialog: (title: string, defaultPath?: string): Promise<string | null> =>
     ipcRenderer.invoke('dialog:openFile', title, defaultPath),
