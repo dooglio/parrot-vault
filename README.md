@@ -33,8 +33,30 @@ PolyVault lets you organize, launch, and monitor multiple cryptocurrency wallets
 
 ### Prerequisites
 
-- **Node.js** v22 (see `.nvmrc`)
-- **npm** (comes with Node.js)
+- **nvm** (Node Version Manager) — recommended for managing Node.js versions
+
+  **macOS / Linux:**
+
+  ```bash
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+  ```
+
+  Then restart your terminal (or `source` your shell profile) and verify:
+
+  ```bash
+  nvm --version
+  ```
+
+  **Windows:** Use [nvm-windows](https://github.com/coreybutler/nvm-windows/releases).
+
+- **Node.js** v22 — install via nvm:
+
+  ```bash
+  nvm install   # reads .nvmrc automatically
+  nvm use       # switches to the project's Node version
+  ```
+
+- **npm** (comes bundled with Node.js)
 
 ### Clone & install
 
