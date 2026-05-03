@@ -1,7 +1,7 @@
 {
   "name": "parrot-vault",
   "productName": "ParrotVault",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ParrotVault — open-source desktop app for managing multiple cryptocurrency wallets",
   "main": "dist-electron/main/index.js",
   "homepage": "https://github.com/dooglio/parrot-vault",
