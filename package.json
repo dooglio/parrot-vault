@@ -55,7 +55,7 @@
   "build": {
     "appId": "com.dooglio.parrot-vault",
     "productName": "PolyVault",
-    "copyright": "Copyright © 2024 dooglio",
+    "copyright": "Copyright © 2026 R. Douglas Barbieri",
     "directories": {
       "output": "release"
     },
