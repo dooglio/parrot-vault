@@ -50,10 +50,27 @@ function createWindow(): void {
 async function requestMacPermissions(): Promise<void> {
   if (process.platform !== 'darwin') return
 
-  // Camera: triggers the system permission dialog on first request
-  const cameraGranted = await systemPreferences.askForMediaAccess('camera')
-  if (!cameraGranted) {
-    console.warn('Camera permission was denied')
+  // Camera: check current status before deciding how to proceed
+  const cameraStatus = systemPreferences.getMediaAccessStatus('camera')
+  if (cameraStatus === 'not-determined') {
+    // First time: triggers the native OS permission dialog
+    await systemPreferences.askForMediaAccess('camera')
+  } else if (cameraStatus === 'denied') {
+    // Previously denied or revoked after reinstall: guide user to System Settings
+    const { response } = await dialog.showMessageBox({
+      type: 'warning',
+      title: 'Camera Permission Required',
+      message: 'PolyVault needs camera access to scan QR codes.',
+      detail:
+        'Camera access was previously denied. Please open System Settings → Privacy & Security → Camera and enable PolyVault.',
+      buttons: ['Open System Settings', 'Later'],
+      defaultId: 0,
+    })
+    if (response === 0) {
+      shell.openExternal(
+        'x-apple.systempreferences:com.apple.preference.security?Privacy_Camera'
+      )
+    }
   }
 
   // Screen recording: macOS does not allow programmatic granting —
