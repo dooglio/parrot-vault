@@ -11,7 +11,7 @@
     "postinstall": "electron-builder install-app-deps",
     "dev": "vite",
     "build": "tsc && vite build && tsc -p tsconfig.electron.json",
-    "electron:build": "npm run build && electron-builder --mac --universal && npm run postinstall",
+    "electron:build": "npm run build && electron-builder --mac --universal",
     "electron:pack": "npm run build && electron-builder --dir",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
@@ -64,6 +64,8 @@
     "mac": {
       "icon": "build/icons/app.icns",
       "category": "public.app-category.finance",
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.inherit.plist",
       "extendInfo": {
         "NSCameraUsageDescription": "Camera access is needed to scan QR codes.",
         "NSScreenCaptureDescription": "Screen recording is needed to read QR codes displayed on screen."
