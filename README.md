@@ -69,7 +69,7 @@ npm install
 ### Run in development mode
 
 ```bash
-npm run electron:dev
+npm run dev
 ```
 
 This starts the Vite dev server and launches Electron with hot-reload.
