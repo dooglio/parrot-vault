@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, dialog, shell, systemPreferences } from 'electron'
 import path from 'path'
 import { initDb } from './db'
 import { registerIpcHandlers } from './ipcHandlers'
@@ -47,7 +47,38 @@ function createWindow(): void {
   })
 }
 
-app.whenReady().then(() => {
+async function requestMacPermissions(): Promise<void> {
+  if (process.platform !== 'darwin') return
+
+  // Camera: triggers the system permission dialog on first request
+  const cameraGranted = await systemPreferences.askForMediaAccess('camera')
+  if (!cameraGranted) {
+    console.warn('Camera permission was denied')
+  }
+
+  // Screen recording: macOS does not allow programmatic granting —
+  // we can only check the status and guide the user to System Settings
+  const screenStatus = systemPreferences.getMediaAccessStatus('screen')
+  if (screenStatus !== 'granted') {
+    const { response } = await dialog.showMessageBox({
+      type: 'info',
+      title: 'Screen Recording Permission Required',
+      message:
+        'PolyVault needs screen recording permission to read QR codes displayed on your screen.',
+      detail:
+        'Please open System Settings → Privacy & Security → Screen Recording and enable PolyVault.',
+      buttons: ['Open System Settings', 'Later'],
+      defaultId: 0,
+    })
+    if (response === 0) {
+      shell.openExternal(
+        'x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture'
+      )
+    }
+  }
+}
+
+app.whenReady().then(async () => {
   // Initialize SQLite database
   initDb()
 
@@ -55,6 +86,9 @@ app.whenReady().then(() => {
   registerIpcHandlers()
 
   createWindow()
+
+  // Request macOS permissions (camera dialog + screen recording guidance)
+  await requestMacPermissions()
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

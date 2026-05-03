@@ -66,6 +66,10 @@
     "mac": {
       "icon": "build/icons/app.icns",
       "category": "public.app-category.finance",
+      "extendInfo": {
+        "NSCameraUsageDescription": "Camera access is needed to scan QR codes.",
+        "NSScreenCaptureDescription": "Screen recording is needed to read QR codes displayed on screen."
+      },
       "target": [
         {
           "target": "dmg",
