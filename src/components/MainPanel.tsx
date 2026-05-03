@@ -11,6 +11,7 @@ export default function MainPanel() {
         <LogsPanel />
       ) : (
         <div className="main-panel-empty">
+          <div className="main-panel-drag-region" />
           <div className="empty-state">
             <div className="empty-state-icon">🦜</div>
             <h2>ParrotVault</h2>

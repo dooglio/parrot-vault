@@ -281,6 +281,15 @@ body,
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+.main-panel-drag-region {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(titlebar-area-height, 28px);
+  -webkit-app-region: drag;
 }
 .empty-state {
   text-align: center;
@@ -317,6 +326,7 @@ body,
   overflow-x: auto;
   flex-shrink: 0;
   padding-top: env(titlebar-area-height, 28px);
+  -webkit-app-region: drag;
 }
 .logs-tabs::-webkit-scrollbar {
   height: 3px;
@@ -339,6 +349,7 @@ body,
     color var(--transition),
     border-color var(--transition);
   outline: none;
+  -webkit-app-region: no-drag;
 }
 .logs-tab:hover {
   color: var(--color-text);
