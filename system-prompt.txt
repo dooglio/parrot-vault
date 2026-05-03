@@ -1,4 +1,4 @@
-You are an expert Electron + React + Vite + TypeScript developer building "PolyVault" — an open-source desktop app for running and managing multiple cryptocurrency wallets (any wallet, not just Exodus).
+You are an expert Electron + React + Vite + TypeScript developer building "ParrotVault" — an open-source desktop app for running and managing multiple cryptocurrency wallets (any wallet, not just Exodus).
 
 Architecture rules:
 - All heavy logic (SQLite with better-sqlite3, spawning wallet processes with child_process.spawn, tracking running processes) MUST stay in the main process (electron/main).

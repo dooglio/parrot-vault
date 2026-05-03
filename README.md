@@ -1,12 +1,12 @@
-# 🦜 PolyVault
+# 🦜 ParrotVault
 
 **Multi-Wallet Manager** — An open-source desktop application for managing and running multiple cryptocurrency wallet instances side by side.
 
-![PolyVault home screen](docs/images/screenshot-home.png)
+![ParrotVault home screen](docs/images/screenshot-home.png)
 
-## What is PolyVault?
+## What is ParrotVault?
 
-PolyVault lets you organize, launch, and monitor multiple cryptocurrency wallets from a single interface. Instead of juggling separate wallet applications and remembering which data directory belongs to which account, PolyVault keeps everything in one place.
+ParrotVault lets you organize, launch, and monitor multiple cryptocurrency wallets from a single interface. Instead of juggling separate wallet applications and remembering which data directory belongs to which account, ParrotVault keeps everything in one place.
 
 ### Features
 
@@ -17,17 +17,17 @@ PolyVault lets you organize, launch, and monitor multiple cryptocurrency wallets
 - **Environment variables** — Configure global environment variables that are injected into every spawned wallet process.
 - **Local SQLite storage** — All wallet metadata is stored locally in a SQLite database — nothing leaves your machine.
 
-![PolyVault running a wallet](docs/images/screenshot-running.png)
+![ParrotVault running a wallet](docs/images/screenshot-running.png)
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Desktop shell | Electron |
-| UI | React 18 + TypeScript |
-| State management | Redux Toolkit |
-| Database | better-sqlite3 |
-| Build tooling | Vite + vite-plugin-electron |
+| Layer            | Technology                  |
+| ---------------- | --------------------------- |
+| Desktop shell    | Electron                    |
+| UI               | React 18 + TypeScript       |
+| State management | Redux Toolkit               |
+| Database         | better-sqlite3              |
+| Build tooling    | Vite + vite-plugin-electron |
 
 ## Installation
 

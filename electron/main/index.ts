@@ -60,16 +60,14 @@ async function requestMacPermissions(): Promise<void> {
     const { response } = await dialog.showMessageBox({
       type: 'warning',
       title: 'Camera Permission Required',
-      message: 'PolyVault needs camera access to scan QR codes.',
+      message: 'ParrotVault needs camera access to scan QR codes.',
       detail:
-        'Camera access was previously denied. Please open System Settings → Privacy & Security → Camera and enable PolyVault.',
+        'Camera access was previously denied. Please open System Settings → Privacy & Security → Camera and enable ParrotVault.',
       buttons: ['Open System Settings', 'Later'],
       defaultId: 0,
     })
     if (response === 0) {
-      shell.openExternal(
-        'x-apple.systempreferences:com.apple.preference.security?Privacy_Camera'
-      )
+      shell.openExternal('x-apple.systempreferences:com.apple.preference.security?Privacy_Camera')
     }
   }
 
@@ -81,9 +79,9 @@ async function requestMacPermissions(): Promise<void> {
       type: 'info',
       title: 'Screen Recording Permission Required',
       message:
-        'PolyVault needs screen recording permission to read QR codes displayed on your screen.',
+        'ParrotVault needs screen recording permission to read QR codes displayed on your screen.',
       detail:
-        'Please open System Settings → Privacy & Security → Screen Recording and enable PolyVault.',
+        'Please open System Settings → Privacy & Security → Screen Recording and enable ParrotVault.',
       buttons: ['Open System Settings', 'Later'],
       defaultId: 0,
     })

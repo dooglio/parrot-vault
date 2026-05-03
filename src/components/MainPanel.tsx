@@ -13,7 +13,7 @@ export default function MainPanel() {
         <div className="main-panel-empty">
           <div className="empty-state">
             <div className="empty-state-icon">🦜</div>
-            <h2>PolyVault</h2>
+            <h2>ParrotVault</h2>
             <p>
               Select a wallet and click <strong>▶ Run</strong> to launch it.
             </p>

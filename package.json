@@ -1,7 +1,7 @@
 {
   "name": "parrot-vault",
   "version": "1.0.0",
-  "description": "PolyVault — open-source desktop app for managing multiple cryptocurrency wallets",
+  "description": "ParrotVault — open-source desktop app for managing multiple cryptocurrency wallets",
   "main": "dist-electron/main/index.js",
   "homepage": "https://github.com/dooglio/parrot-vault",
   "author": "dooglio",
@@ -54,7 +54,7 @@
   },
   "build": {
     "appId": "com.dooglio.parrot-vault",
-    "productName": "PolyVault",
+    "productName": "ParrotVault",
     "copyright": "Copyright © 2026 R. Douglas Barbieri",
     "directories": {
       "output": "release"
@@ -81,7 +81,7 @@
       ]
     },
     "dmg": {
-      "title": "PolyVault",
+      "title": "ParrotVault",
       "icon": "build/icons/app.icns"
     },
     "win": {
@@ -93,7 +93,7 @@
       "category": "Finance",
       "target": "deb",
       "desktop": {
-        "Name": "PolyVault",
+        "Name": "ParrotVault",
         "Comment": "Manage multiple cryptocurrency wallets",
         "Categories": "Finance;Office;"
       }

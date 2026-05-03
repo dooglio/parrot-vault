@@ -13,7 +13,7 @@ export default function Sidebar() {
       <div className="sidebar-header">
         <ParrotMascot />
         <div className="app-title">
-          <h1>PolyVault</h1>
+          <h1>ParrotVault</h1>
           <p className="app-subtitle">Multi-Wallet Manager</p>
         </div>
       </div>
