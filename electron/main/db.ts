@@ -29,7 +29,7 @@ let db: Database.Database
 
 export function initDb(): void {
   const userDataPath = app.getPath('userData')
-  const dbPath = path.join(userDataPath, 'polyvault.db')
+  const dbPath = path.join(userDataPath, 'wallets.db')
 
   db = new Database(dbPath)
   db.pragma('journal_mode = WAL')
