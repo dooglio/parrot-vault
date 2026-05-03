@@ -1,5 +1,6 @@
 {
   "name": "parrot-vault",
+  "productName": "ParrotVault",
   "version": "1.0.0",
   "description": "ParrotVault — open-source desktop app for managing multiple cryptocurrency wallets",
   "main": "dist-electron/main/index.js",
